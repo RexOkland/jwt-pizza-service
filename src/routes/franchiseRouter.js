@@ -5,6 +5,9 @@ const { StatusCodeError, asyncHandler } = require('../endpointHelper.js');
 
 const franchiseRouter = express.Router();
 
+//METRICS FOR GRAFANA//
+const metrics = require('../metrics');
+
 franchiseRouter.endpoints = [
   {
     method: 'GET',

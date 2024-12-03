@@ -6,6 +6,9 @@ const { DB, Role } = require('../database/database.js');
 
 const authRouter = express.Router();
 
+//METRICS FOR GRAFANA//
+const metrics = require('../metrics.js');
+
 authRouter.endpoints = [
   {
     method: 'POST',
@@ -58,8 +61,18 @@ async function setAuthUser(req, res, next) {
 // Authenticate token
 authRouter.authenticateToken = (req, res, next) => {
   if (!req.user) {
-    return res.status(401).send({ message: 'unauthorized' });
+    return res.status(401).send({ message: 'unauthorized' })
+    //rex's addition
+    ,
+    metrics.incrementFailedAuthAttempts //failed authentication attempt//
+    //
   }
+  //rex's addition
+  else{
+    metrics.incrementPassedAuthAttempts //passed authentication attempt//
+    metrics.incrementActiveUsers //active user increases with successful login//
+  }
+  //
   next();
 };
 
@@ -74,10 +87,13 @@ authRouter.post(
     const user = await DB.addUser({ name, email, password, roles: [{ role: Role.Diner }] });
     const auth = await setAuth(user);
     res.json({ user: user, token: auth });
+    //rex's addition
+    metrics.incrementActiveUsers; //newly registered user is active//
+    //
   })
 );
 
-// login
+// login - not touching this, because I've put the metrics on the token authentication function
 authRouter.put(
   '/',
   asyncHandler(async (req, res) => {
@@ -88,7 +104,7 @@ authRouter.put(
   })
 );
 
-// logout
+// logout - assuming it's always done correctly//
 authRouter.delete(
   '/',
   authRouter.authenticateToken,
@@ -96,6 +112,10 @@ authRouter.delete(
     clearAuth(req);
     res.json({ message: 'logout successful' });
   })
+  //rex's addition
+  ,
+  metrics.decrementActiveUsers
+  //
 );
 
 // updateUser
