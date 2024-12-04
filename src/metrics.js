@@ -39,7 +39,9 @@ class Metrics {
 
 
         //3rd req//
-
+        this.sendMetricToGrafana('request', 'all', 'authentication_attempt', this.authenticationAttempts);
+        this.sendMetricToGrafana('request', 'all', 'passed_auth_attempt', this.passedAuth);
+        this.sendMetricToGrafana('request', 'all', 'failed_auth_attempts', this.failedAuth);
         
     }, 10000);
     timer.unref();
