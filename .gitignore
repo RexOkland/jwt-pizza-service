@@ -3,4 +3,4 @@
 config.js
 coverage
 dist
-src/grafanaMetrics.json
+src/grafanaConfig.json
