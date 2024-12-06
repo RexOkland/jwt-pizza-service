@@ -80,6 +80,9 @@ orderRouter.post(
   '/',
   authRouter.authenticateToken,
   asyncHandler(async (req, res) => {
+
+    //req 6 - start pizza timer//
+    const startTime = Date.now();
     const orderReq = req.body;
     const order = await DB.addDinerOrder(req.user, orderReq);
     const r = await fetch(`${config.factory.url}/api/order`, {
@@ -89,10 +92,30 @@ orderRouter.post(
     });
     const j = await r.json();
     if (r.ok) {
-      res.send({ order, jwt: j.jwt, reportUrl: j.reportUrl });
-    } else {
+      // rex's addition //
+      sum = 0;
+      for(let i = 0; i < req.body.items.length; ++i){
+        sum += req.body.items[i].price
+      }
+      metrics.addToTotalRevenue(sum)
+      metrics.incrementPizzasSold(req.body.items.length)
+      console.log(metrics.getTotalRevenue())
+      console.log(metrics.getSoldPizzas())
+      //
+      res.send({ order, jwt: j.jwt, reportUrl: j.reportUrl });      
+
+    } 
+    else {
+      metrics.incrementPizzasFailed(req.body.items.length)
+      console.log(metrics.getFailedPizzas())
       res.status(500).send({ message: 'Failed to fulfill order at factory', reportUrl: j.reportUrl });
     }
+
+    //req 6 - end pizza timer//
+    endTime = Date.now()
+    pizza_time = endTime - startTime;
+    metrics.setPizzaLatency(pizza_time);
+    console.log("- order latency = " + pizza_time)
   })
 );
 

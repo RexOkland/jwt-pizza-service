@@ -64,13 +64,16 @@ authRouter.authenticateToken = (req, res, next) => {
     return res.status(401).send({ message: 'unauthorized' })
     //rex's addition
     ,
-    metrics.incrementFailedAuthAttempts //failed authentication attempt//
+    console.log("TOKEN AUTHENTICATION REACHED - invalid token")
+    // ,
+    // metrics.incrementFailedAuthAttempts() //failed authentication attempt//
     //
   }
   //rex's addition
   else{
-    metrics.incrementPassedAuthAttempts //passed authentication attempt//
-    metrics.incrementActiveUsers //active user increases with successful login//
+    console.log("TOKEN AUTHENTICATION REACHED - valid token");
+    // metrics.incrementPassedAuthAttempts() //passed authentication attempt//
+    // metrics.incrementActiveUsers() //active user increases with successful login//
   }
   //
   next();
@@ -88,12 +91,16 @@ authRouter.post(
     const auth = await setAuth(user);
     res.json({ user: user, token: auth });
     //rex's addition
-    metrics.incrementActiveUsers; //newly registered user is active//
+    console.log("REGISTER - incrementing active users")
+    metrics.incrementActiveUsers(); //newly registered user is active//
+    //report key metrics with this action//
+    console.log(metrics.getActiveUsers())
+    console.log(metrics.getPostRequests())
     //
   })
 );
 
-// login - not touching this, because I've put the metrics on the token authentication function
+
 authRouter.put(
   '/',
   asyncHandler(async (req, res) => {
@@ -101,6 +108,15 @@ authRouter.put(
     const user = await DB.getUser(email, password);
     const auth = await setAuth(user);
     res.json({ user: user, token: auth });
+
+    //assuming a successful login ... database throws failed cases
+    metrics.incrementActiveUsers()
+    metrics.incrementPassedAuthAttempts()
+    console.log("LOGIN ATTEMPTED - passed")
+    // return key metrics with this result //
+    console.log(metrics.getActiveUsers())
+    console.log(metrics.getAuthenticationAttempts())
+    console.log(metrics.getPassedAuth())
   })
 );
 
@@ -111,11 +127,13 @@ authRouter.delete(
   asyncHandler(async (req, res) => {
     clearAuth(req);
     res.json({ message: 'logout successful' });
+    //rex's addition
+    console.log("LOGOUT - decrementing active users")
+    metrics.decrementActiveUsers()
+    console.log(metrics.getActiveUsers())
+    //
   })
-  //rex's addition
-  ,
-  metrics.decrementActiveUsers
-  //
+  
 );
 
 // updateUser
