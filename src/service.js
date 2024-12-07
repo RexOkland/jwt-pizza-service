@@ -8,6 +8,9 @@ const config = require('./config.js');
 //METRICS FOR GRAFANA//
 const metrics = require('./metrics.js');
 
+//LOGGER FOR GRAFANA//
+const logger = require('./logging.js');
+
 const app = express();
 app.use(express.json());
 app.use(setAuthUser);
@@ -18,6 +21,9 @@ app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Credentials', 'true');
   next();
 });
+
+//LOGGER MIDDLEWARE - deliverable 9//
+app.use(logger.httpLogger) //is that it?//
 
 //req 1//
 app.use((req, res, next) => {

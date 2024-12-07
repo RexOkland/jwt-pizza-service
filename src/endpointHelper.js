@@ -1,6 +1,11 @@
+//LOGGER FOR GRAFANA//
+const logger = require('./logging.js');
+
+
 class StatusCodeError extends Error {
   constructor(message, statusCode) {
     super(message);
+    logger.unhandledErrorLogger(this);
     this.statusCode = statusCode;
   }
 }

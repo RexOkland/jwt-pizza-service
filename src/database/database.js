@@ -8,6 +8,10 @@ const dbModel = require('./dbModel.js');
 //METRICS FOR GRAFANA//
 const metrics = require('../metrics.js');
 
+
+//LOGGER FOR GRAFANA//
+const logger = require('../logging.js');
+
 class DB {
   constructor() {
     this.initialized = this.initializeDatabase();
@@ -298,6 +302,9 @@ class DB {
   }
 
   async query(connection, sql, params) {
+    //adding in deliverable 9 logger tool here//
+    logger.dbLogger(sql)
+    //
     const [results] = await connection.execute(sql, params);
     return results;
   }

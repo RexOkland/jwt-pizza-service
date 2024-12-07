@@ -9,6 +9,9 @@ const orderRouter = express.Router();
 //METRICS FOR GRAFANA//
 const metrics = require('../metrics');
 
+//LOGGER FOR GRAFANA//
+const logger = require('../logging.js');
+
 orderRouter.endpoints = [
   {
     method: 'GET',
@@ -90,6 +93,10 @@ orderRouter.post(
       headers: { 'Content-Type': 'application/json', authorization: `Bearer ${config.factory.apiKey}` },
       body: JSON.stringify({ diner: { id: req.user.id, name: req.user.name, email: req.user.email }, order }),
     });
+    //deliverable 9 logger tool addition//
+    console.log("order being logged: " + orderReq);
+    logger.factoryLogger(orderReq);
+    //
     const j = await r.json();
     if (r.ok) {
       // rex's addition //
@@ -110,6 +117,10 @@ orderRouter.post(
       console.log(metrics.getFailedPizzas())
       res.status(500).send({ message: 'Failed to fulfill order at factory', reportUrl: j.reportUrl });
     }
+
+    // //deliverable 9 logger tool addition//
+    // logger.factoryLogger(orderReq);
+    // //
 
     //req 6 - end pizza timer//
     endTime = Date.now()
