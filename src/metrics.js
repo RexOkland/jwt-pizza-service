@@ -147,7 +147,7 @@ class Metrics {
   sendMetricToGrafana(metricPrefix, httpMethod, metricName, metricValue) {
     const metric = `${metricPrefix},source=${config.metrics.source},method=${httpMethod} ${metricName}=${metricValue}`;
 
-    fetch(`${config.url}`, {
+    fetch(`${config.metrics.url}`, {
       method: 'post',
       body: metric,
       headers: { Authorization: `Bearer ${config.metrics.userId}:${config.metrics.apiKey}` },
