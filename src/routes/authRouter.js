@@ -61,8 +61,9 @@ async function setAuthUser(req, res, next) {
 // Authenticate token
 authRouter.authenticateToken = (req, res, next) => {
   if (!req.user) {
+    
     console.log("req body: " + JSON.stringify(req.body));
-    console.log("res body: " + JSON.stringify(res.body))
+    console.log("res body: " + JSON.stringify(res.body));
 
     return res.status(401).send({ message: 'unauthorized' })
     //rex's addition
