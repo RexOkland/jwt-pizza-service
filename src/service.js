@@ -27,21 +27,24 @@ app.use(logger.httpLogger) //is that it?//
 
 //req 1//
 app.use((req, res, next) => {
-  console.log("METHOD = " + req.method)
-  console.log("BODY = " + JSON.stringify(req.body))
+  //console.log("METHOD = " + req.method)
+  //console.log("BODY = " + JSON.stringify(req.body))
   //req 6 - start timer//
   const startTime = Date.now()
   
   if(req.method == 'POST'){metrics.incrementPostRequests()}
   else if(req.method == 'GET'){metrics.incrementGetRequests()}
   else if(req.method == 'DELETE'){metrics.incrementDeleteRequests()}
-  else if(req.method == 'PUT'){console.log("we got a put request!"); metrics.incrementPutRequests()}
+  else if(req.method == 'PUT'){
+    //console.log("we got a put request!"); 
+    metrics.incrementPutRequests()
+  }
 
   //req 6 - end timer//
   res.on('finish', () => {
     const duration = Date.now() - startTime;
     metrics.setRequestLatency(duration)
-    console.log("- request latency = " + duration)
+    //console.log("- request latency = " + duration)
   });
   
 

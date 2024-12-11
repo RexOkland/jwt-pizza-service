@@ -93,10 +93,10 @@ class Logger {
         },
       });
       if (!res.ok) {
-        console.log('Failed to send log to Grafana');
+        //console.log('Failed to send log to Grafana');
       }
       else{
-        console.log("LOG PUSHED TO GRAFANA")
+        //console.log("LOG PUSHED TO GRAFANA")
       }
     } catch (error) {
       console.log('Error sending log to Grafana:', error);

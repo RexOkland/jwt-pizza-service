@@ -51,10 +51,10 @@ class Metrics {
 
         //4th req//
         this.sendMetricToGrafana('percent', "CPU_Usage", 'CPU', this.getCpuUsagePercentage()) //running function, sending results//
-        console.log("CPU = " + this.getCpuUsagePercentage()); //printing this too//
+        //console.log("CPU = " + this.getCpuUsagePercentage()); //printing this too//
 
         this.sendMetricToGrafana('percent', "Memory_Usage", 'Memory_Usage', this.getMemoryUsagePercentage()) //running function, sending results//
-        console.log("Memory Usage % = " + this.getMemoryUsagePercentage()) //printing this too//
+        //console.log("Memory Usage % = " + this.getMemoryUsagePercentage()) //printing this too//
 
         //5th req//
         this.sendMetricToGrafana('sum', 'Pizzas_Sold', 'Pizzas_Sold', this.pizzasSold);
